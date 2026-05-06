@@ -11,15 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ✅ Checkout code
+      # ✅ Checkout latest version (fixed)
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ✅ Install system dependencies (fixed)
+      # ✅ Install dependencies (FIXED - no upgrade)
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get upgrade -y
           sudo apt-get install -y \
             python3-pip \
             git \
@@ -36,7 +35,7 @@ jobs:
             cmake \
             libffi-dev \
             libssl-dev
-          
+
           pip install --upgrade pip
           pip install buildozer cython
 
