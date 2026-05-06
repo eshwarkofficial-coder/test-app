@@ -3,50 +3,37 @@ name: Build APK
 on:
   push:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04   # ✅ more stable than latest
 
     steps:
-      # ✅ Checkout latest version (fixed)
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ✅ Install dependencies (FIXED - no upgrade)
-      - name: Install dependencies
+      - name: Install system packages
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y \
-            python3-pip \
-            git \
-            zip \
-            unzip \
-            openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo5 \
-            cmake \
-            libffi-dev \
-            libssl-dev
+          sudo apt update
+          sudo apt install -y python3-pip git zip unzip openjdk-17-jdk \
+          autoconf libtool pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev cmake \
+          libffi-dev libssl-dev
 
+      - name: Install Python tools
+        run: |
           pip install --upgrade pip
           pip install buildozer cython
 
-      # ✅ Build APK
+      - name: Initialize buildozer
+        run: |
+          buildozer init || true
+
       - name: Build APK
         run: |
           buildozer android debug
 
-      # ✅ Upload APK (fixed v4)
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: kle-apk
+          name: apk
           path: bin/*.apk
